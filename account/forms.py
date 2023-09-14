@@ -23,7 +23,7 @@ class UserRegistrationForm(forms.ModelForm):
         model = CustomUser
         fields = ["username", "email", "first_name"]
 
-    def clean_password2(self):
+    def clean_password_repeat(self):
         data = self.cleaned_data
         if data["password"] != data["password_repeat"]:
             raise forms.ValidationError("Passwords don't match.")
