@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, UserRegistrationForm, EditProfile
@@ -68,6 +69,12 @@ def edit_profile(request):
         )
         if user_form.is_valid():
             user_form.save()
+            messages.success(request, "Profile Updated")
+        else:
+            messages.error(request, "Error while updating your profile!")
+
     else:
         user_form = EditProfile(instance=request.user)
+        messages.error(request, "Error while updating your profile!")
+
     return render(request, "account/edit.html", {"user_form": user_form})
