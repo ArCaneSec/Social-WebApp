@@ -28,3 +28,15 @@ class UserRegistrationForm(forms.ModelForm):
         if data["password"] != data["password_repeat"]:
             raise forms.ValidationError("Passwords don't match.")
         return data["password"]
+    
+
+class EditProfile(forms.ModelForm):
+    """
+    This form is to let users edit their profile.
+    They are allowed to change their FIELDS data.
+    """
+
+    class Meta:
+        model = CustomUser
+        fields = ["first_name", "last_name", "email", "photo"]
+
