@@ -17,7 +17,9 @@ class UserRegistrationForm(forms.ModelForm):
     """
 
     password = forms.CharField(label="Password", widget=forms.PasswordInput)
-    password_repeat = forms.CharField(label="Repeat password", widget=forms.PasswordInput)
+    password_repeat = forms.CharField(
+        label="Repeat password", widget=forms.PasswordInput
+    )
 
     class Meta:
         model = CustomUser
@@ -28,7 +30,6 @@ class UserRegistrationForm(forms.ModelForm):
         if data["password"] != data["password_repeat"]:
             raise forms.ValidationError("Passwords don't match.")
         return data["password"]
-    
 
 class EditProfile(forms.ModelForm):
     """
@@ -39,4 +40,3 @@ class EditProfile(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ["first_name", "last_name", "email", "photo"]
-
