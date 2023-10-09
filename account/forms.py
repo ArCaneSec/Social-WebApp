@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import CustomUser
 
 
@@ -31,6 +32,13 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords don't match.")
         return data["password"]
 
+    def clean_email(self):
+        data = self.cleaned_data["email"]
+        if CustomUser.objects.filter(email=data).exists():
+            raise forms.ValidationError("Email already in use.")
+        return data
+
+
 class EditProfile(forms.ModelForm):
     """
     This form is to let users edit their profile.
@@ -40,3 +48,10 @@ class EditProfile(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ["first_name", "last_name", "email", "photo"]
+
+    def clean_email(self):
+        data = self.cleaned_data["email"]
+        qs = CustomUser.objects.exclude(id=self.instance.id).filter(email=data)
+        if qs.exists():
+            raise forms.ValidationError("Email already in use.")
+        return data
