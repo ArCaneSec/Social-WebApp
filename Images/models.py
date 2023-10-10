@@ -1,11 +1,11 @@
-from django.conf import settings
+from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 from django.db import models
 
 # Create your models here.
 
 
-class Images(models.Model):
+class Image(models.Model):
     user = models.ForeignKey(
         get_user_model(),
         related_name="images_created",
@@ -26,3 +26,8 @@ class Images(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)

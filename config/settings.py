@@ -41,13 +41,14 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 AUTH_USER_MODEL = "account.CustomUser"
 
 INSTALLED_APPS = [
-    "account.apps.AccountConfig",
-    "images.add.ImagesConfigdjango.contrib.admin",
+    'django.contrib.admin',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "account.apps.AccountConfig",
+    "images.apps.ImagesConfig",
 ]
 
 MIDDLEWARE = [
