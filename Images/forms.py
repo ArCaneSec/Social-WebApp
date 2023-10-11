@@ -26,8 +26,8 @@ class ImageCreateForm(forms.ModelForm):
         """
         Downloading the image, saving if commit is True
         """
-        image = super().save(commit=False)
-        image_url = self.cleaned_data["url"]
+        image: Image = super().save(commit=False)
+        image_url: str = self.cleaned_data["url"]
         name = slugify(image.title)
         extension = image_url.rsplit(".", 1)[1].lower()
         image_name = f"{name}.{extension}"
