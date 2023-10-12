@@ -4,10 +4,10 @@
 
 {% block content %}
   <h1>{{ image.title }}</h1>
-  {% load thumbnail %}
+  {% comment %} {% load thumbnail %}
   <a href="{{ image.image.url }}">
     <img src="{% thumbnail image.image 300x0 %}" class="image-detail">
-  </a>
+  </a> {% endcomment %}
   {% with total_likes=image.users_like.count users_like=image.users_like.all %}
     <div class="image-info">
       <div>
@@ -38,6 +38,7 @@
         Nobody likes this image yet.
       {% endfor %}
     </div>
+    <img src={{image.image.url}}></img>
   {% endwith %}
 {% endblock %}
 
