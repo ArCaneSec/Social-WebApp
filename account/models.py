@@ -11,7 +11,9 @@ class CustomUser(AbstractUser):
     """
 
     birthdate = models.DateField(blank=True, null=True)
-    photo = models.ImageField(upload_to="users/%Y/%m/%d/", blank=True)
+    photo = models.ImageField(
+        upload_to="users/%Y/%m/%d/", blank=True, null=True
+    )
     following = models.ManyToManyField(
         "self", through="Contact", related_name="followers", symmetrical=False
     )
