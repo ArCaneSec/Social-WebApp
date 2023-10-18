@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-LOGIN_REDIRECT_URL = "dashboard"
+LOGIN_REDIRECT_URL = "account:dashboard"
 LOGIN_URL = "login"
 LOGOUT_URL = "logout"
 
@@ -41,14 +41,14 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 AUTH_USER_MODEL = "account.CustomUser"
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "account.apps.AccountConfig",
     "django.contrib.auth",
+    "django.contrib.admin",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "easy_thumbnails",
-    "account.apps.AccountConfig",
     "images.apps.ImagesConfig",
 ]
 

@@ -18,7 +18,6 @@
     var margin = document.body.clientHeight - window.innerHeight - 200;
     if(window.pageYOffset > margin && !emptyPage && !blockRequest) {
       blockRequest = true;
-      console.log("test")
       fetch('?images_only=1&page=' + page)
       .then(response => response.text())
       .then(html => {

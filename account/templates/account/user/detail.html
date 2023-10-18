@@ -30,7 +30,7 @@
   const url = '{% url "account:user_follow" %}';
   var options = {
     method: 'POST',
-    headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+    headers: {'X-CSRFToken': csrftoken},
     mode: 'same-origin'
   }
   document.querySelector('a.follow')

@@ -120,10 +120,15 @@ def user_follow(request):
             {
                 "status": "error",
                 "message": "action and user_id parameters must specified",
-            }
+            },
+            status=400,
         )
     try:
         user = CustomUser.objects.get(id=user_id)
+        if user == request.user:
+            return JsonResponse(
+                {"status": "error", "message": "Invalid user"}, status=400
+            )
         if action == "follow":
             Contact.objects.get_or_create(user_from=request.user, user_to=user)
         else:
@@ -132,4 +137,6 @@ def user_follow(request):
             ).delete()
         return JsonResponse({"status": "ok"})
     except CustomUser.DoesNotExist:
-        return JsonResponse({"status": "error", "message": "user not found"})
+        return JsonResponse(
+            {"status": "error", "message": "user not found"}, status=404
+        )
