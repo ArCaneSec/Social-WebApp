@@ -22,7 +22,7 @@ class CustomUser(AbstractUser):
         return f"Profile of {super().username}"
 
     def get_absolute_url(self):
-        return reverse("user_detail", args=[self.username])
+        return reverse("account:user_detail", args=[self.username])
 
 
 class Contact(models.Model):

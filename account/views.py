@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.http import require_POST
 
 from .forms import EditProfile, LoginForm, UserRegistrationForm
-from .models import CustomUser
+from .models import Contact, CustomUser
 
 # Create your views here.
 
@@ -32,8 +33,9 @@ def register(request):
 
 def user_login(request):
     """
-    Login Form, simple get requests will receive raw form to login,
-    while post requests will initiate an authentication method against provided credentials.
+    Login Form, simple get requests will receive raw form to login.
+    Post requests will initiate an authentication method
+    against provided credentials.
     """
 
     if request.method == "POST":
@@ -58,6 +60,7 @@ def user_login(request):
 
 @login_required
 def dashboard(request):
+    """Home page"""
     return render(request, "account/dashboard.html", {"section": "dashboard"})
 
 
@@ -85,6 +88,7 @@ def edit_profile(request):
 
 @login_required
 def users_list(request):
+    """Returning active users in platform"""
     users = CustomUser.objects.filter(is_active=True)
     return render(
         request,
@@ -101,3 +105,31 @@ def user_detail(request, username):
         "account/user/detail.html",
         {"section": "people", "user": user},
     )
+
+
+@require_POST
+@login_required
+def user_follow(request):
+    """
+    This view is responsible for follow and unfollow action.
+    """
+    user_id = request.POST.get("id")
+    action = request.POST.get("action")
+    if not user_id and action:
+        return JsonResponse(
+            {
+                "status": "error",
+                "message": "action and user_id parameters must specified",
+            }
+        )
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        if action == "follow":
+            Contact.objects.get_or_create(user_from=request.user, user_to=user)
+        else:
+            Contact.objects.filter(
+                user_from=request.user, user_to=user
+            ).delete()
+        return JsonResponse({"status": "ok"})
+    except CustomUser.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "user not found"})

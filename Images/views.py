@@ -36,7 +36,7 @@ def image_details(request, id, slug):
     return render(
         request,
         "images/image/detail.html",
-        {"section": "images", "image": image},
+        {"section": "images", "images": image},
     )
 
 
@@ -66,7 +66,7 @@ def image_list(request):
     page = request.GET.get("page")
 
     # If set, rendering images only instead of whole page
-    image_only = request.GET.get("image_only")
+    image_only = request.GET.get("images_only")
     try:
         paginator.page(page)
     except PageNotAnInteger:
@@ -79,11 +79,10 @@ def image_list(request):
         return render(
             request,
             "images/image/list_images.html",
-            {"section": "images", "images": images},
+            {"section": "image", "images": images},
         )
     return render(
         request,
         "images/image/list.html",
-        {"section": "images", "images": images},
+        {"section": "image", "images": images},
     )
-
