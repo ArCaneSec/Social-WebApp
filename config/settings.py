@@ -42,6 +42,7 @@ AUTH_USER_MODEL = "account.CustomUser"
 
 INSTALLED_APPS = [
     "account.apps.AccountConfig",
+    "actions.apps.ActionsConfig",
     "django.contrib.auth",
     "django.contrib.admin",
     "django.contrib.contenttypes",
