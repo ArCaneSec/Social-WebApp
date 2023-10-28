@@ -19,7 +19,7 @@ class CustomUser(AbstractUser):
     )
 
     def __str__(self) -> str:
-        return f"Profile of {super().username}"
+        return f"{super().get_full_name()}"
 
     def get_absolute_url(self):
         return reverse("account:user_detail", args=[self.username])
