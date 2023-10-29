@@ -21,10 +21,12 @@ class Image(models.Model):
     users_like = models.ManyToManyField(
         get_user_model(), related_name="users_like", blank=True
     )
+    total_likes = models.PositiveIntegerField(default=0)
 
     class Meta:
         indexes = [
             models.Index(fields=["-created"]),
+            models.Index(fields=["-total_likes"]),
         ]
         ordering = ["-created"]
 
