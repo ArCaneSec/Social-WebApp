@@ -1,14 +1,22 @@
+import redis
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
+
 from actions.utils import create_action
+
 from .forms import ImageCreateForm
 from .models import Image
 
 # Create your views here.
+
+r = redis.Redis(
+    host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB
+)
 
 
 @login_required
@@ -33,11 +41,30 @@ def create_image(request):
 
 
 def image_details(request, id, slug):
+    """Responsible for returning details of an image
+    increasing its view count as well."""
     image = get_object_or_404(Image, id=id, slug=slug)
+    # Increasing total views in redis db
+    total_views = r.incr(f"image:{image.id}:views")
+    r.zincrby("image_ranking", 1, image.id)
     return render(
         request,
         "images/image/detail.html",
-        {"section": "images", "images": image},
+        {"section": "images", "images": image, "total_views": total_views},
+    )
+
+
+@login_required
+def image_rankings(request):
+    """Returning top 10 of most viewed images on app."""
+    image_ranking = r.zrange("image_ranking", 0, -1, desc=True)[:10]
+    image_ranking_ids = [int(id) for id in image_ranking]
+    most_viewed = list(Image.objects.filter(id__in=image_ranking_ids))
+    most_viewed.sort(key=lambda x: image_ranking_ids.index(x.id))
+    return render(
+        request,
+        "images/image/ranking.html",
+        {"section": "images", "most_viewed": most_viewed},
     )
 
 
@@ -63,6 +90,10 @@ def image_like(request):
 
 @login_required
 def image_list(request):
+    """
+    This view is responsible for listing images with pagination.
+    can be called with ajax too.
+    """
     images = Image.objects.all()
     paginator = Paginator(images, 8)
     page = request.GET.get("page")
